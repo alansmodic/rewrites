@@ -1,0 +1,124 @@
+/**
+ * Admin styles for Rewrites plugin.
+ */
+
+/* Status badges */
+.rewrites-status {
+	display: inline-block;
+	padding: 3px 8px;
+	border-radius: 3px;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	line-height: 1.4;
+}
+
+.rewrites-status--pending {
+	background-color: #f0b849;
+	color: #1d2327;
+}
+
+.rewrites-status--approved {
+	background-color: #4ab866;
+	color: #fff;
+}
+
+.rewrites-status--rejected {
+	background-color: #d63638;
+	color: #fff;
+}
+
+/* Table columns */
+.wp-list-table .column-title {
+	width: 25%;
+}
+
+.wp-list-table .column-type {
+	width: 8%;
+}
+
+.wp-list-table .column-author {
+	width: 10%;
+}
+
+.wp-list-table .column-modified {
+	width: 12%;
+}
+
+.wp-list-table .column-status {
+	width: 8%;
+}
+
+.wp-list-table .column-scheduled {
+	width: 12%;
+}
+
+.wp-list-table .column-notes {
+	width: 10%;
+}
+
+.wp-list-table .column-actions {
+	width: 15%;
+}
+
+/* Actions column */
+.rewrites-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+
+.rewrites-actions .button {
+	margin: 0;
+}
+
+/* Row hover state */
+.wp-list-table tbody tr:hover {
+	background-color: #f6f7f7;
+}
+
+/* Disabled state */
+.rewrites-actions .button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* Small text under modified date */
+.column-modified small {
+	color: #646970;
+}
+
+/* Notes column truncation */
+.column-notes {
+	max-width: 150px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 1200px) {
+	.wp-list-table .column-notes,
+	.wp-list-table .column-scheduled {
+		display: none;
+	}
+
+	.wp-list-table .column-title {
+		width: 30%;
+	}
+
+	.wp-list-table .column-actions {
+		width: 25%;
+	}
+}
+
+@media screen and (max-width: 960px) {
+	.rewrites-actions {
+		flex-direction: column;
+	}
+
+	.rewrites-actions .button {
+		width: 100%;
+		text-align: center;
+	}
+}
