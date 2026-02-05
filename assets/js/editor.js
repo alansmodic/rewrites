@@ -238,55 +238,39 @@
 			}
 		}, []);
 
+		// Track if we triggered the save ourselves (to bypass checklist).
+		const bypassChecklistRef = useRef(false);
+
 		// Intercept save for published posts when checklist is enabled.
+		// Use event delegation on document to handle button re-renders.
 		useEffect(() => {
 			if (!checklistEnabled || !isPostPublished) {
 				return;
 			}
 
-			// Lock post saving initially so we can intercept.
-			let isLocked = false;
-			let wasTriggeredByUs = false;
+			const handleClick = (e) => {
+				// Check if clicked element is the publish/update button.
+				const button = e.target.closest('.editor-post-publish-button');
+				if (!button) return;
 
-			const interceptSave = () => {
-				// Find the Update button and intercept clicks.
-				const updateButton = document.querySelector('.editor-post-publish-button');
-				if (!updateButton) return;
+				// If we triggered the save, let it through.
+				if (bypassChecklistRef.current) {
+					bypassChecklistRef.current = false;
+					return;
+				}
 
-				const handleClick = (e) => {
-					// If we triggered the save, let it through.
-					if (wasTriggeredByUs) {
-						wasTriggeredByUs = false;
-						return;
-					}
-
-					// If checklist modal is already showing, ignore.
-					if (showChecklist) {
-						e.preventDefault();
-						e.stopPropagation();
-						return;
-					}
-
-					// Prevent default save and show checklist.
-					e.preventDefault();
-					e.stopPropagation();
-					setShowChecklist(true);
-				};
-
-				// Add our click handler with capture to intercept before Gutenberg.
-				updateButton.addEventListener('click', handleClick, true);
-
-				return () => {
-					updateButton.removeEventListener('click', handleClick, true);
-				};
+				// Prevent default save and show checklist.
+				e.preventDefault();
+				e.stopPropagation();
+				setShowChecklist(true);
 			};
 
-			// Wait for DOM to be ready.
-			const timeoutId = setTimeout(interceptSave, 500);
+			// Add click handler with capture on document to intercept before Gutenberg.
+			document.addEventListener('click', handleClick, true);
 
 			// Store reference to trigger real save later.
 			pendingSaveRef.current = () => {
-				wasTriggeredByUs = true;
+				bypassChecklistRef.current = true;
 				const updateButton = document.querySelector('.editor-post-publish-button');
 				if (updateButton) {
 					updateButton.click();
@@ -294,9 +278,9 @@
 			};
 
 			return () => {
-				clearTimeout(timeoutId);
+				document.removeEventListener('click', handleClick, true);
 			};
-		}, [checklistEnabled, isPostPublished, showChecklist]);
+		}, [checklistEnabled, isPostPublished]);
 
 		// Fetch existing staged revision on mount or when post becomes published.
 		useEffect(() => {
