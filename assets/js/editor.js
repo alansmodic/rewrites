@@ -298,11 +298,6 @@
 			};
 		}, [checklistEnabled, isPostPublished, showChecklist]);
 
-		// Only show for published posts (including freshly published).
-		if (!isPostPublished) {
-			return null;
-		}
-
 		// Fetch existing staged revision on mount or when post becomes published.
 		useEffect(() => {
 			if (!postId || !isPostPublished) return;
@@ -323,6 +318,11 @@
 					setIsLoading(false);
 				});
 		}, [postId, isPostPublished]);
+
+		// Only show for published posts (including freshly published).
+		if (!isPostPublished) {
+			return null;
+		}
 
 		/**
 		 * Save changes as staged revision (from checklist modal).
