@@ -201,6 +201,10 @@
 		const [checklistSaving, setChecklistSaving] = useState(null);
 		const pendingSaveRef = useRef(null);
 
+		// Track if post has become published (for showing UI after first publish).
+		const [isPostPublished, setIsPostPublished] = useState(false);
+		const previousStatusRef = useRef(null);
+
 		const { createSuccessNotice, createErrorNotice } = useDispatch('core/notices');
 		const { lockPostSaving, unlockPostSaving } = useDispatch('core/editor');
 
@@ -219,9 +223,24 @@
 				};
 			});
 
+		// Track when post becomes published (including after first publish without page reload).
+		useEffect(() => {
+			if (postStatus === 'publish' && previousStatusRef.current !== 'publish') {
+				setIsPostPublished(true);
+			}
+			previousStatusRef.current = postStatus;
+		}, [postStatus]);
+
+		// Also set published state if post was already published on load.
+		useEffect(() => {
+			if (postStatus === 'publish') {
+				setIsPostPublished(true);
+			}
+		}, []);
+
 		// Intercept save for published posts when checklist is enabled.
 		useEffect(() => {
-			if (!checklistEnabled || postStatus !== 'publish') {
+			if (!checklistEnabled || !isPostPublished) {
 				return;
 			}
 
@@ -277,16 +296,16 @@
 			return () => {
 				clearTimeout(timeoutId);
 			};
-		}, [checklistEnabled, postStatus, showChecklist]);
+		}, [checklistEnabled, isPostPublished, showChecklist]);
 
-		// Only show for published posts.
-		if (postStatus !== 'publish') {
+		// Only show for published posts (including freshly published).
+		if (!isPostPublished) {
 			return null;
 		}
 
-		// Fetch existing staged revision on mount.
+		// Fetch existing staged revision on mount or when post becomes published.
 		useEffect(() => {
-			if (!postId) return;
+			if (!postId || !isPostPublished) return;
 
 			setIsLoading(true);
 			apiFetch({ path: `/rewrites/v1/staged/${postId}` })
@@ -303,7 +322,7 @@
 				.finally(() => {
 					setIsLoading(false);
 				});
-		}, [postId]);
+		}, [postId, isPostPublished]);
 
 		/**
 		 * Save changes as staged revision (from checklist modal).

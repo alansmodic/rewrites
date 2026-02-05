@@ -148,8 +148,8 @@ class Rewrites {
 			return;
 		}
 
-		// Only load for published posts.
-		if ( 'publish' !== $post->post_status ) {
+		// Load for published posts and drafts (so UI appears after first publish).
+		if ( ! in_array( $post->post_status, array( 'publish', 'draft', 'auto-draft', 'pending' ), true ) ) {
 			return;
 		}
 
