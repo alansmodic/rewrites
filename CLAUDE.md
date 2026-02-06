@@ -9,31 +9,31 @@ Rewrites is a WordPress plugin (v1.0.0) that lets authors save changes to publis
 ## Repository Structure
 
 ```
-rewrites.php              # Main plugin entry point (constants, autoloader, init)
+rewrites.php                         # Main plugin entry point (constants, autoloader, init)
 includes/
-  class-rewrites.php      # Core class: meta registration, REST route init, editor asset enqueue
-  class-staged-revision.php  # Staged revision CRUD, publish, schedule, approve/reject
-  class-rest-controller.php  # REST API endpoints (rewrites/v1/staged/*)
-  class-cron-handler.php     # WP-Cron handler for scheduled publishing
+  class-rewrites.php                 # Core class: meta registration, REST route init, editor asset enqueue
+  class-rewrites-staged-revision.php # Staged revision CRUD, publish, schedule, approve/reject
+  class-rewrites-rest-controller.php # REST API endpoints (rewrites/v1/staged/*)
+  class-rewrites-cron-handler.php    # WP-Cron handler for scheduled publishing
 admin/
-  class-admin.php         # Admin menu page, dashboard widget
-  class-settings.php      # Settings page, checklist editor, AJAX handler
+  class-rewrites-admin.php           # Admin menu page, dashboard widget
+  class-rewrites-settings.php        # Settings page, checklist editor, AJAX handler
   views/
-    admin-page.php        # Admin page HTML template
+    admin-page.php                   # Admin page HTML template
 assets/
   js/
-    editor.js             # Block editor sidebar + checklist modal (React via wp.element)
-    admin.js              # Admin page jQuery interactions
-    settings.js           # Settings page jQuery UI sortable + AJAX save
+    editor.js                        # Block editor sidebar + checklist modal (React via wp.element)
+    admin.js                         # Admin page jQuery interactions
+    settings.js                      # Settings page jQuery UI sortable + AJAX save
   css/
-    admin.css             # Admin styles, status badges, responsive layout
+    admin.css                        # Admin styles, status badges, responsive layout
 ```
 
 ## Architecture
 
 - **Singleton pattern** for core classes (`Rewrites`, `Rewrites_Cron_Handler`, `Rewrites_Admin`, `Rewrites_Settings`)
 - **Static methods** on `Rewrites_Staged_Revision` for all revision operations (no singleton)
-- **Autoloader** in `rewrites.php` maps `Rewrites\` namespace to `includes/class-*.php`
+- **Autoloader** in `rewrites.php` maps `Rewrites\` namespace to `includes/class-rewrites-*.php`
 - Classes are initialized on the `plugins_loaded` hook
 
 ### Key Technical Details
@@ -108,7 +108,7 @@ assets/
 
 - **No build step** — PHP is loaded natively, JS is plain ES6 (no transpilation/bundling)
 - **No package.json or composer.json** — no npm/composer dependencies
-- **PHPCS** appears to be used locally (`.phpcs-cache` in `.gitignore`) for WordPress coding standards
+- **PHPCS** with `WordPress` standard — run via `phpcs --standard=WordPress --extensions=php .`
 - **No test suite** is configured yet
 
 ## Settings Storage (wp_options)
