@@ -2,6 +2,7 @@
 /**
  * Admin page template for reviewing staged revisions.
  *
+ * @package Rewrites
  * @var array $staged_items Array of staged revision data.
  */
 
@@ -37,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<?php
 					$author      = get_userdata( $item->staged_author_id );
 					$author_name = $author ? $author->display_name : __( 'Unknown', 'rewrites' );
-					$status      = $item->staged_status ?: 'pending';
+					$item_status = $item->staged_status ? $item->staged_status : 'pending';
 					?>
 					<tr data-revision-id="<?php echo esc_attr( $item->revision_id ); ?>">
 						<td class="column-title">
@@ -75,14 +76,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<small><?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $item->post_modified ) ) ); ?></small>
 						</td>
 						<td class="column-status">
-							<span class="rewrites-status rewrites-status--<?php echo esc_attr( $status ); ?>">
+							<span class="rewrites-status rewrites-status--<?php echo esc_attr( $item_status ); ?>">
 								<?php
 								$status_labels = array(
 									'pending'  => __( 'Pending', 'rewrites' ),
 									'approved' => __( 'Approved', 'rewrites' ),
 									'rejected' => __( 'Rejected', 'rewrites' ),
 								);
-								echo esc_html( $status_labels[ $status ] ?? ucfirst( $status ) );
+								echo esc_html( $status_labels[ $item_status ] ?? ucfirst( $item_status ) );
 								?>
 							</span>
 						</td>
@@ -94,7 +95,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<?php endif; ?>
 						</td>
 						<td class="column-notes">
-							<?php echo esc_html( $item->notes ?: '&mdash;' ); ?>
+							<?php echo esc_html( $item->notes ? $item->notes : '—' ); ?>
 						</td>
 						<td class="column-actions">
 							<div class="rewrites-actions">
@@ -102,19 +103,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<?php esc_html_e( 'Compare', 'rewrites' ); ?>
 								</a>
 
-								<?php if ( 'approved' !== $status && 'rejected' !== $status ) : ?>
+								<?php if ( 'approved' !== $item_status && 'rejected' !== $item_status ) : ?>
 									<button type="button" class="button button-small button-primary rewrites-approve" data-revision="<?php echo esc_attr( $item->revision_id ); ?>">
 										<?php esc_html_e( 'Approve', 'rewrites' ); ?>
 									</button>
 								<?php endif; ?>
 
-								<?php if ( 'rejected' !== $status ) : ?>
+								<?php if ( 'rejected' !== $item_status ) : ?>
 									<button type="button" class="button button-small rewrites-publish" data-revision="<?php echo esc_attr( $item->revision_id ); ?>">
 										<?php esc_html_e( 'Publish Now', 'rewrites' ); ?>
 									</button>
 								<?php endif; ?>
 
-								<?php if ( 'rejected' !== $status ) : ?>
+								<?php if ( 'rejected' !== $item_status ) : ?>
 									<button type="button" class="button button-small rewrites-reject" data-revision="<?php echo esc_attr( $item->revision_id ); ?>">
 										<?php esc_html_e( 'Reject', 'rewrites' ); ?>
 									</button>

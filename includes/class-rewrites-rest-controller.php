@@ -1,12 +1,17 @@
 <?php
 /**
  * REST API controller for staged revisions.
+ *
+ * @package Rewrites
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * REST API controller providing endpoints for staged revision management.
+ */
 class Rewrites_REST_Controller extends WP_REST_Controller {
 
 	/**
@@ -214,7 +219,7 @@ class Rewrites_REST_Controller extends WP_REST_Controller {
 				'revision_title' => $item->revision_title,
 				'author'         => (int) $item->staged_author_id,
 				'author_name'    => $this->get_author_name( $item->staged_author_id ),
-				'status'         => $item->staged_status ?: 'pending',
+				'status'         => $item->staged_status ? $item->staged_status : 'pending',
 				'scheduled_date' => $item->scheduled_date,
 				'notes'          => $item->notes,
 				'modified'       => $item->post_modified,

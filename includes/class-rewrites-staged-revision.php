@@ -1,12 +1,17 @@
 <?php
 /**
  * Staged revision manager class.
+ *
+ * @package Rewrites
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Handles CRUD operations, publishing, scheduling, and approval workflow for staged revisions.
+ */
 class Rewrites_Staged_Revision {
 
 	/**
@@ -95,7 +100,8 @@ class Rewrites_Staged_Revision {
 
 		// Mark as staged revision using direct metadata functions (update_post_meta doesn't work for revisions).
 		self::update_revision_meta( $revision_id, '_staged_revision', '1' );
-		self::update_revision_meta( $revision_id, '_staged_author', get_current_user_id() ?: 1 );
+		$current_user_id = get_current_user_id();
+		self::update_revision_meta( $revision_id, '_staged_author', $current_user_id ? $current_user_id : 1 );
 		self::update_revision_meta( $revision_id, '_staged_status', 'pending' );
 
 		// Save additional meta.
@@ -119,7 +125,7 @@ class Rewrites_Staged_Revision {
 		$revisions = wp_get_post_revisions(
 			$post_id,
 			array(
-				'check_enabled' => false,
+				'check_enabled'  => false,
 				'posts_per_page' => -1,
 			)
 		);
@@ -353,10 +359,10 @@ class Rewrites_Staged_Revision {
 			$where_clauses[] = $wpdb->prepare( 'pm_status.meta_value = %s', $args['status'] );
 		}
 
-		$where = implode( ' AND ', $where_clauses );
+		$where  = implode( ' AND ', $where_clauses );
 		$offset = ( $args['page'] - 1 ) * $args['per_page'];
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$query = $wpdb->prepare(
 			"SELECT r.ID as revision_id, r.post_parent, r.post_modified, r.post_author,
 					r.post_title as revision_title, r.post_content as revision_content,
@@ -378,8 +384,9 @@ class Rewrites_Staged_Revision {
 			$args['per_page'],
 			$offset
 		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_results( $query );
 	}
 
@@ -397,7 +404,7 @@ class Rewrites_Staged_Revision {
 			'content'        => $revision->post_content,
 			'excerpt'        => $revision->post_excerpt,
 			'author'         => (int) self::get_revision_meta( $revision->ID, '_staged_author' ),
-			'status'         => self::get_revision_meta( $revision->ID, '_staged_status' ) ?: 'pending',
+			'status'         => self::get_revision_meta( $revision->ID, '_staged_status' ) ? self::get_revision_meta( $revision->ID, '_staged_status' ) : 'pending',
 			'scheduled_date' => self::get_revision_meta( $revision->ID, '_staged_publish_date' ),
 			'notes'          => self::get_revision_meta( $revision->ID, '_staged_notes' ),
 			'modified'       => $revision->post_modified,

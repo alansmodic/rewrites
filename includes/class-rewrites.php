@@ -1,12 +1,17 @@
 <?php
 /**
  * Core plugin class.
+ *
+ * @package Rewrites
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Core plugin class for meta registration, REST route initialization, and editor asset enqueuing.
+ */
 class Rewrites {
 
 	/**
@@ -174,20 +179,20 @@ class Rewrites {
 			'rewrites-editor',
 			'rewritesData',
 			array(
-				'postId'            => $post->ID,
-				'stagedRevisionId'  => (int) get_post_meta( $post->ID, '_has_staged_revision', true ),
-				'restNonce'         => wp_create_nonce( 'wp_rest' ),
-				'checklistEnabled'  => Rewrites_Settings::is_enabled(),
-				'checklistItems'    => Rewrites_Settings::get_checklist_items(),
-				'strings'           => array(
-					'checklistTitle'     => __( 'Before You Publish', 'rewrites' ),
-					'checklistSubtitle'  => __( 'Please review the checklist below before publishing your changes.', 'rewrites' ),
-					'saveAsRewrite'      => __( 'Save as Rewrite', 'rewrites' ),
-					'confirmAndPublish'  => __( 'Confirm & Publish Now', 'rewrites' ),
-					'cancel'             => __( 'Cancel', 'rewrites' ),
-					'requiredItems'      => __( 'Please check all required items before publishing.', 'rewrites' ),
-					'savingRewrite'      => __( 'Saving as rewrite...', 'rewrites' ),
-					'publishing'         => __( 'Publishing...', 'rewrites' ),
+				'postId'           => $post->ID,
+				'stagedRevisionId' => (int) get_post_meta( $post->ID, '_has_staged_revision', true ),
+				'restNonce'        => wp_create_nonce( 'wp_rest' ),
+				'checklistEnabled' => Rewrites_Settings::is_enabled(),
+				'checklistItems'   => Rewrites_Settings::get_checklist_items(),
+				'strings'          => array(
+					'checklistTitle'    => __( 'Before You Publish', 'rewrites' ),
+					'checklistSubtitle' => __( 'Please review the checklist below before publishing your changes.', 'rewrites' ),
+					'saveAsRewrite'     => __( 'Save as Rewrite', 'rewrites' ),
+					'confirmAndPublish' => __( 'Confirm & Publish Now', 'rewrites' ),
+					'cancel'            => __( 'Cancel', 'rewrites' ),
+					'requiredItems'     => __( 'Please check all required items before publishing.', 'rewrites' ),
+					'savingRewrite'     => __( 'Saving as rewrite...', 'rewrites' ),
+					'publishing'        => __( 'Publishing...', 'rewrites' ),
 				),
 			)
 		);
@@ -198,10 +203,10 @@ class Rewrites {
 	 *
 	 * @param bool    $post_has_changed Whether the post has changed.
 	 * @param WP_Post $last_revision    The last revision post object.
-	 * @param WP_Post $post             The post object.
+	 * @param WP_Post $post             The post object (unused, required by filter signature).
 	 * @return bool
 	 */
-	public function protect_staged_revisions( $post_has_changed, $last_revision, $post ) {
+	public function protect_staged_revisions( $post_has_changed, $last_revision, $post ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 		// If the last revision is a staged revision, don't mark it as unchanged.
 		// This ensures WordPress creates a new revision instead of skipping.
 		// Use get_metadata for revision posts since get_post_meta doesn't work on revisions.

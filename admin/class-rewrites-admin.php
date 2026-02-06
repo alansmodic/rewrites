@@ -1,12 +1,17 @@
 <?php
 /**
  * Admin page for reviewing staged revisions.
+ *
+ * @package Rewrites
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Admin menu page, script enqueuing, and dashboard widget for staged revisions.
+ */
 class Rewrites_Admin {
 
 	/**
@@ -67,6 +72,7 @@ class Rewrites_Admin {
 	private function get_pending_count() {
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		return (int) $wpdb->get_var(
 			"SELECT COUNT(*)
 			 FROM {$wpdb->postmeta} pm
@@ -179,7 +185,7 @@ class Rewrites_Admin {
 		echo '<div class="rewrites-widget-list">';
 
 		foreach ( $staged_items as $item ) {
-			$status      = $item->staged_status ?: 'pending';
+			$status      = $item->staged_status ? $item->staged_status : 'pending';
 			$author      = get_userdata( $item->staged_author_id );
 			$author_name = $author ? $author->display_name : __( 'Unknown', 'rewrites' );
 
