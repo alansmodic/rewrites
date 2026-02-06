@@ -7,6 +7,8 @@
  * Requires at least: 6.4
  * Requires PHP: 7.4
  * Text Domain: rewrites
+ *
+ * @package Rewrites
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -21,16 +23,16 @@ define( 'REWRITES_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
  * Autoload plugin classes.
  */
 spl_autoload_register(
-	function ( $class ) {
+	function ( $class_name ) {
 		$prefix   = 'Rewrites\\';
 		$base_dir = REWRITES_PLUGIN_DIR . 'includes/';
 
 		$len = strlen( $prefix );
-		if ( strncmp( $prefix, $class, $len ) !== 0 ) {
+		if ( strncmp( $prefix, $class_name, $len ) !== 0 ) {
 			return;
 		}
 
-		$relative_class = substr( $class, $len );
+		$relative_class = substr( $class_name, $len );
 		$file           = $base_dir . 'class-' . strtolower( str_replace( '_', '-', $relative_class ) ) . '.php';
 
 		if ( file_exists( $file ) ) {
@@ -44,11 +46,11 @@ spl_autoload_register(
  */
 function rewrites_init() {
 	require_once REWRITES_PLUGIN_DIR . 'includes/class-rewrites.php';
-	require_once REWRITES_PLUGIN_DIR . 'includes/class-staged-revision.php';
-	require_once REWRITES_PLUGIN_DIR . 'includes/class-rest-controller.php';
-	require_once REWRITES_PLUGIN_DIR . 'includes/class-cron-handler.php';
-	require_once REWRITES_PLUGIN_DIR . 'admin/class-admin.php';
-	require_once REWRITES_PLUGIN_DIR . 'admin/class-settings.php';
+	require_once REWRITES_PLUGIN_DIR . 'includes/class-rewrites-staged-revision.php';
+	require_once REWRITES_PLUGIN_DIR . 'includes/class-rewrites-rest-controller.php';
+	require_once REWRITES_PLUGIN_DIR . 'includes/class-rewrites-cron-handler.php';
+	require_once REWRITES_PLUGIN_DIR . 'admin/class-rewrites-admin.php';
+	require_once REWRITES_PLUGIN_DIR . 'admin/class-rewrites-settings.php';
 
 	Rewrites::get_instance();
 	Rewrites_Cron_Handler::get_instance();

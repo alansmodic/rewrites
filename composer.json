@@ -1,0 +1,15 @@
+{
+    "name": "rewrites/rewrites",
+    "description": "Rewrites WordPress Plugin",
+    "require-dev": {
+        "phpcsstandards/php_codesniffer": "*",
+        "phpcsstandards/phpcsextra": "*",
+        "phpcsstandards/phpcsutils": "*",
+        "wp-coding-standards/wpcs": "*"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

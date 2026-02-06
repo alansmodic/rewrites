@@ -1,12 +1,19 @@
 <?php
 /**
  * Cron handler for scheduled publishing of staged revisions.
+ *
+ * @package Rewrites
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Class Rewrites_Cron_Handler
+ *
+ * Handles WP-Cron scheduled publishing of staged revisions.
+ */
 class Rewrites_Cron_Handler {
 
 	/**

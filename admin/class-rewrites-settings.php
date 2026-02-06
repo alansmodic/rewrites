@@ -1,12 +1,19 @@
 <?php
 /**
  * Settings page for Rewrites plugin.
+ *
+ * @package Rewrites
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Class Rewrites_Settings
+ *
+ * Settings page and checklist configuration for the Rewrites plugin.
+ */
 class Rewrites_Settings {
 
 	/**
@@ -121,7 +128,7 @@ class Rewrites_Settings {
 		}
 
 		$enabled = isset( $_POST['enabled'] ) ? (bool) $_POST['enabled'] : false;
-		$items   = isset( $_POST['items'] ) ? $_POST['items'] : array();
+		$items   = isset( $_POST['items'] ) ? map_deep( wp_unslash( $_POST['items'] ), 'sanitize_text_field' ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		// Sanitize items.
 		$sanitized_items = array();
