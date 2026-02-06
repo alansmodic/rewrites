@@ -2,6 +2,8 @@
 
 A WordPress plugin that lets you save changes to published posts without immediately publishing them. Includes editorial review workflow and scheduled publishing.
 
+[<img src="https://img.shields.io/badge/Try%20it%20on-WordPress%20Playground-3858e9?style=for-the-badge&logo=wordpress" alt="Try it on WordPress Playground" />](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/alansmodic/rewrites/main/blueprint.json)
+
 ## Features
 
 - **Staged Revisions**: Save changes to published posts as drafts for review before going live
